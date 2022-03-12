@@ -8,27 +8,13 @@ MODEL_SUFFIX?=_SQ8BIT
 
 MODEL_PREFIX?=
 
-# The training of the model is slightly different depending on
-# the quantization. This is because in 8 bit mode we used signed
-# 8 bit so the input to the model needs to be shifted 1 bit
-# ifeq ($(QUANT_BITS),8)
-#   TRAIN_SUFFIX=_8BIT
-# else
-#   ifeq ($(QUANT_BITS),16)
-#     TRAIN_SUFFIX=_16BIT
-#   else
-#     $(error Dont know how to build with this bit width)
-#   endif
-# endif
-
-MODEL_PYTHON=python3
-
 TRAINED_TFLITE_MODEL=model/$(MODEL_PREFIX).tflite
 MODEL_COMMON ?= common
 MODEL_COMMON_INC ?= $(GAP_SDK_HOME)/libs/gap_lib/include
 MODEL_COMMON_SRC ?= $(GAP_SDK_HOME)/libs/gap_lib/img_io
 MODEL_COMMON_SRC_FILES ?= ImgIO.c
 MODEL_COMMON_SRCS = $(realpath $(addprefix $(MODEL_COMMON_SRC)/,$(MODEL_COMMON_SRC_FILES)))
+# 若要修改模型的目录清更改这里。
 MODEL_BUILD = BUILD_MODEL$(MODEL_SUFFIX)
 
 MODEL_TFLITE = $(MODEL_BUILD)/$(MODEL_PREFIX).tflite
@@ -112,6 +98,7 @@ MODEL_GEN_INCLUDE_SQ8 = -I$(TILER_CNN_GENERATOR_PATH) -I$(TILER_CNN_GENERATOR_PA
 
 MODEL_SIZE_CFLAGS = -DAT_INPUT_HEIGHT=$(AT_INPUT_HEIGHT) -DAT_INPUT_WIDTH=$(AT_INPUT_WIDTH) -DAT_INPUT_COLORS=$(AT_INPUT_COLORS)
 
+# 修改量化位数
 MODEL_SQ8?=1
 ifdef MODEL_SQ8
   CNN_GEN = $(MODEL_GEN_SQ8)
